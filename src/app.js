@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
 import routes from './routes';
-
-require('dotenv').config();
+import './conexao/variaveis';
 
 class App {
   constructor() {
