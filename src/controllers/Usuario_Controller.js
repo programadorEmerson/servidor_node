@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import Firebase from '../conexao/index';
-import User from '../models/Usuario';
+import User from '../models/Usuario_Model';
+import Empresa from '../models/Empresa_Model';
 
 class Usuario {
   // Não utilizada, faz a consulta no banco de dados do Firebase/Firestore
@@ -49,12 +50,41 @@ class Usuario {
     if (!(await User.findOne({ email: req.body.email }))) {
       const user = await User.create(req.body);
       user.senha = undefined;
-      return res.status(200).json({ sucess: user });
+      return res.status(200).json({
+        sucess: `The user ${req.body.email} was created successfully`,
+      });
     }
 
     return res
       .status(401)
       .json({ error: `The user ${req.body.email} already exists.` });
+  }
+
+  async deletarUsuario(req, res) {
+    const { email } = req.headers;
+
+    try {
+      const empresas = await Empresa.find();
+      const administrador = empresas
+        .filter((filtro) =>
+          filtro.usuarios.some((usuario) => usuario.email === email)
+        )[0]
+        .usuarios.find((filtro) => filtro.email === email).super_usuario;
+
+      if (administrador) {
+        await User.findOneAndDelete({ email });
+        return res.json({
+          message: `The user ${email} has been successfully deleted.`,
+        });
+      }
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to delete.' });
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ error: 'Invalid data for this operation.' });
+    }
   }
 }
 
