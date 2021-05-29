@@ -11,6 +11,7 @@ const EmpresaSchema = new Schema([
     chaves_utilizadas: [{}],
     dados_cadastrais: {
       cnpj: String,
+      uuid: String,
       cidade: String,
       complemento: String,
       endereco: String,
