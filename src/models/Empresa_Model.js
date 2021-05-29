@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose';
 const EmpresaSchema = new Schema([
   {
     chave_atual: {
+      uuid: String,
       data_ativacao: String,
       data_validade: String,
       key: String,
@@ -10,8 +11,8 @@ const EmpresaSchema = new Schema([
     },
     chaves_utilizadas: [{}],
     dados_cadastrais: {
-      cnpj: String,
       uuid: String,
+      cnpj: String,
       cidade: String,
       complemento: String,
       endereco: String,
@@ -22,6 +23,7 @@ const EmpresaSchema = new Schema([
       saldo: Number,
     },
     plano_contratado: {
+      uuid: String,
       contratacao: String,
       tipo: String,
       valor: Number,

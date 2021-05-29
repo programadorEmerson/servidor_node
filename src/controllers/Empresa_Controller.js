@@ -86,9 +86,9 @@ class Empresa_Controller {
 
   async atualizarEmpresa(req, res) {
     const empresas = await Empresa.find();
-    const { email } = req.headers;
+    const { uuid_admin, uuid_empresa } = req.headers;
     const {
-      chave_atual = null,
+      chave_atual: novaChave = null,
       dados_cadastrais = null,
       plano_contratado = null,
       email: novoEmail = null,
@@ -97,13 +97,14 @@ class Empresa_Controller {
     } = req.body;
 
     try {
-      const empresa = empresas.filter((filtro) =>
-        filtro.usuarios.some((usuario) => usuario.email === email)
-      )[0];
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
       const novaAtualizacao = empresa;
 
       const administrador = empresa.usuarios.find(
-        (filtro) => filtro.email === email
+        (cUsuario) => cUsuario.uuid === uuid_admin
       ).super_usuario;
 
       const verificaChaveAtual = Yup.object().shape({
@@ -115,7 +116,6 @@ class Empresa_Controller {
 
       const verificaDadosCadastrais = Yup.object().shape({
         cnpj: Yup.string().required(),
-        uuid: Yup.string().required(),
         cidade: Yup.string().required(),
         complemento: Yup.string().required(),
         endereco: Yup.string().required(),
@@ -153,16 +153,23 @@ class Empresa_Controller {
         email: Yup.string().required(),
         active: Yup.boolean().required(),
       });
-
       if (administrador) {
-        if (chave_atual) {
-          if (!(await verificaChaveAtual.isValid(chave_atual))) {
+        if (novaChave) {
+          if (!(await verificaChaveAtual.isValid(novaChave))) {
             return res
               .status(400)
               .json({ error: 'Invalid data for key validation.' });
           }
-          novaAtualizacao.chaves_utilizadas.push(empresa.chave_atual);
-          novaAtualizacao.chave_atual = chave_atual;
+
+          novaAtualizacao.chaves_utilizadas.push({
+            uuid: empresa.chave_atual.uuid,
+            data_ativacao: empresa.chave_atual.data_ativacao,
+            data_validade: empresa.chave_atual.data_validade,
+            key: empresa.chave_atual.key,
+            valor: empresa.valor,
+          });
+          novaChave.uuid = uuid();
+          novaAtualizacao.chave_atual = novaChave;
         }
 
         if (dados_cadastrais) {
@@ -171,6 +178,7 @@ class Empresa_Controller {
               .status(400)
               .json({ error: 'Invalid data for registration validation.' });
           }
+          dados_cadastrais.uuid = uuid_empresa;
           novaAtualizacao.dados_cadastrais = dados_cadastrais;
         }
 
@@ -180,6 +188,7 @@ class Empresa_Controller {
               .status(400)
               .json({ error: 'Invalid data for plan validation.' });
           }
+          plano_contratado.uuid = empresa.plano_contratado.uuid;
           novaAtualizacao.plano_contratado = plano_contratado;
         }
 
@@ -191,16 +200,17 @@ class Empresa_Controller {
           }
 
           const checkEmail = empresa.emails.find(
-            (vEmail) => vEmail.email === novoEmail.email
+            (vEmail) => vEmail.uuid === novoEmail.uuid
           );
 
           if (checkEmail) {
             empresa.emails.forEach((cEmail, indice) => {
-              if (cEmail.email === checkEmail.email) {
+              if (cEmail.uuid === checkEmail.uuid) {
                 novaAtualizacao.emails[indice] = novoEmail;
               }
             });
           } else {
+            novoEmail.uuid = uuid();
             novaAtualizacao.emails.push(novoEmail);
           }
         }
@@ -212,16 +222,17 @@ class Empresa_Controller {
               .json({ error: 'Invalid data for telephone validation.' });
           }
           const checkTelefone = empresa.telefones.find(
-            (vTelefone) => vTelefone.telefone === telefone.telefone
+            (vTelefone) => vTelefone.uuid === telefone.uuid
           );
 
           if (checkTelefone) {
             empresa.telefones.forEach((cTelefone, indice) => {
-              if (cTelefone.telefone === checkTelefone.telefone) {
+              if (cTelefone.uuid === checkTelefone.uuid) {
                 novaAtualizacao.telefones[indice] = telefone;
               }
             });
           } else {
+            telefone.uuid = uuid();
             novaAtualizacao.telefones.push(telefone);
           }
         }
@@ -234,13 +245,12 @@ class Empresa_Controller {
           }
 
           const verificaUser = empresa.usuarios.find(
-            (usuario) => usuario.email === novoUsuario.email
+            (usuario) => usuario.uuid === novoUsuario.uuid
           );
 
           if (verificaUser) {
             empresa.usuarios.forEach((usuario, indice) => {
-              if (usuario.email === verificaUser.email) {
-                novoUsuario.uuid = verificaUser.uuid;
+              if (usuario.uuid === novoUsuario.uuid) {
                 novaAtualizacao.usuarios[indice] = novoUsuario;
               }
             });
@@ -254,6 +264,7 @@ class Empresa_Controller {
         return res
           .status(200)
           .json({ sucess: 'Operation completed with sucess.' });
+        // .json({ sucess: novaAtualizacao })
       }
 
       return res
