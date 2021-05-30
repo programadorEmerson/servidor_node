@@ -274,6 +274,267 @@ class Empresa_Controller {
       return res.status(400).json({ error: 'Invalid data for this request' });
     }
   }
+
+  async listarEmails(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.emails });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async listarTelefones(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.telefones });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async planoContratado(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.plano_contratado });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async chaveAtual(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.chave_atual });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async chavesUtilizadas(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.chaves_utilizadas });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async dadosCadastrais(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        return res.status(200).json({ sucess: empresa.dados_cadastrais });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async deletarEmail(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa, uuid_email } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+      const novaAtualizacao = empresa;
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        const usuariosFiltrados = empresa.emails.filter(
+          (consulta) => consulta.uuid !== uuid_email
+        );
+
+        novaAtualizacao.emails = usuariosFiltrados;
+
+        await Empresa.updateOne({ _id: empresa._id }, novaAtualizacao);
+        return res
+          .status(200)
+          .json({ sucess: 'Operation completed with sucess.' });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async deletarTelefone(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa, uuid_telefone } = req.headers;
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+      const novaAtualizacao = empresa;
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      if (administrador) {
+        const filtroRealizado = empresa.telefones.filter(
+          (consulta) => consulta.uuid !== uuid_telefone
+        );
+
+        novaAtualizacao.telefones = filtroRealizado;
+
+        await Empresa.updateOne({ _id: empresa._id }, novaAtualizacao);
+        return res
+          .status(200)
+          .json({ sucess: 'Operation completed with sucess.' });
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
+
+  async atualizarPlano(req, res) {
+    const empresas = await Empresa.find();
+    const { uuid_admin, uuid_empresa } = req.headers;
+    const { plano_contratado = null } = req.body;
+
+    try {
+      const empresa = empresas.find(
+        (cEmpresa) => cEmpresa.dados_cadastrais.uuid === uuid_empresa
+      );
+
+      const novaAtualizacao = empresa;
+
+      const administrador = empresa.usuarios.find(
+        (cUsuario) => cUsuario.uuid === uuid_admin
+      ).super_usuario;
+
+      const verificaPlanoContratado = Yup.object().shape({
+        contratacao: Yup.string().required(),
+        uuid: Yup.string().required(),
+        tipo: Yup.string().required(),
+        valor: Yup.number().required(),
+      });
+
+      if (administrador) {
+        if (plano_contratado) {
+          if (!(await verificaPlanoContratado.isValid(plano_contratado))) {
+            return res
+              .status(400)
+              .json({ error: 'Invalid data for plan validation.' });
+          }
+          novaAtualizacao.plano_contratado = plano_contratado;
+        }
+
+        await Empresa.updateOne({ _id: empresa._id }, novaAtualizacao);
+        return (
+          res
+            .status(200)
+            // .json({ sucess: 'Operation completed with sucess.' });
+            .json({ sucess: novaAtualizacao.plano_contratado })
+        );
+      }
+
+      return res
+        .status(400)
+        .json({ error: 'User with no privileges to update.' });
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid data for this request' });
+    }
+  }
 }
 
 export default new Empresa_Controller();
