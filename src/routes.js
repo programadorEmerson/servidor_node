@@ -4,24 +4,37 @@ import Usuario from './controllers/Usuario_Controller';
 
 const routes = new Router();
 
-// Criar nova empresa cliente
-routes.post('/empresa/criar', Empresa.criarEmpresa);
-
-// Resgatar dados da Empresa - Completo
-routes.get('/empresa/chaves/utilizadas', Empresa.chavesUtilizadas);
-routes.get('/empresa/listar/emails', Empresa.listarEmails);
-routes.get('/empresa/listar/telefones', Empresa.listarTelefones);
+// Opções dos usuários
 routes.get('/empresa/listar/usuarios', Usuario.listarUsuario);
-routes.get('/empresa/chave/atual', Empresa.chaveAtual);
-routes.get('/empresa/dados/cadastrais', Empresa.dadosCadastrais);
-routes.get('/empresa/plano/contratado', Empresa.planoContratado);
-
-// Deletar dados da empresa - Completo
-routes.delete('/empresa/deletar/email', Empresa.deletarEmail);
-routes.delete('/empresa/deletar/telefone', Empresa.deletarTelefone);
+routes.post('/empresa/adicionar/usuario', Empresa.adicionarUsuario);
+routes.put('/empresa/atualizar/usuario', Usuario.atualizarUsuario);
 routes.delete('/empresa/deletar/usuario', Usuario.deletarUsuario);
 
-// Atualizar dados da empresa
+// Opções dos emails
+routes.get('/empresa/listar/emails', Empresa.listarEmails);
+routes.put('/empresa/atualizar/email', Empresa.atualizarEmail);
+routes.delete('/empresa/deletar/email', Empresa.deletarEmail);
+
+// Opções dos telefones
+routes.get('/empresa/listar/telefones', Empresa.listarTelefones);
+routes.post('/empresa/adicionar/telefone', Empresa.adicionarTelefone);
+routes.put('/empresa/atualizar/telefone', Empresa.atualizarTelefone);
+routes.delete('/empresa/deletar/telefone', Empresa.deletarTelefone);
+
+// Opções do cadastro
+routes.get('/empresa/dados/cadastrais', Empresa.dadosCadastrais);
+routes.put('/empresa/atualizar/cadastro', Empresa.atualizarCadastro);
+
+// Opções do plano
+routes.get('/empresa/plano/contratado', Empresa.planoContratado);
 routes.put('/empresa/atualizar/plano', Empresa.atualizarPlano);
+
+// Gerenciar chave de acesso
+routes.get('/empresa/chave/atual', Empresa.chaveAtual);
+routes.post('/empresa/adicionar/chave', Empresa.adicionarChave);
+routes.get('/empresa/chaves/utilizadas', Empresa.chavesUtilizadas);
+
+// Criar nova empresa cliente - Completo
+routes.post('/empresa/criar', Empresa.criarEmpresa);
 
 export default routes;
