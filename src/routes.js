@@ -12,6 +12,7 @@ routes.delete('/empresa/deletar/usuario', Usuario.deletarUsuario);
 
 // Opções dos emails
 routes.get('/empresa/listar/emails', Empresa.listarEmails);
+routes.post('/empresa/adicionar/email', Empresa.adicionarEmail);
 routes.put('/empresa/atualizar/email', Empresa.atualizarEmail);
 routes.delete('/empresa/deletar/email', Empresa.deletarEmail);
 
