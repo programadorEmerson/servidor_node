@@ -1,8 +1,15 @@
 import { Router } from 'express';
 import Empresa from './controllers/Empresa_Controller';
 import Usuario from './controllers/Usuario_Controller';
+import Produto from './controllers/Produto_Controller';
 
 const routes = new Router();
+
+// Opções Produto
+routes.get('/produto/listar', Produto.listarProdutos);
+routes.post('/produto/novo', Produto.cadastrarProduto);
+routes.put('/produto/atualizar', Produto.atualizarProduto);
+routes.delete('/produto/deletar', Produto.deletarProduto);
 
 // Opções dos usuários
 routes.get('/empresa/listar/usuarios', Usuario.listarUsuario);

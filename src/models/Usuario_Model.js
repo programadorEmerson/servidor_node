@@ -11,4 +11,4 @@ const UsuarioSchema = new Schema({
   senha: String,
 });
 
-export default model('Empresa', UsuarioSchema);
+export default model('Usuario', UsuarioSchema);
