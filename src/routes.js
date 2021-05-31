@@ -45,4 +45,7 @@ routes.get('/empresa/chaves/utilizadas', Empresa.chavesUtilizadas);
 // Criar nova empresa cliente - Completo
 routes.post('/empresa/criar', Empresa.criarEmpresa);
 
+// Rota inicial
+routes.get('/', Empresa.initialRout);
+
 export default routes;

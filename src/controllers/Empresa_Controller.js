@@ -837,6 +837,10 @@ class Empresa_Controller {
       return res.status(400).json({ error: 'Invalid data for this request' });
     }
   }
+
+  async initialRout(req, res) {
+    return res.status(200).json({ conected: 'server ok' });
+  }
 }
 
 export default new Empresa_Controller();
